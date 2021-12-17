@@ -1,8 +1,22 @@
-## Welcome to GitHub Pages
+## Application Using Main Window
+create a MainWindow based application using the designer
+- [Introduction](#INTRO)
+- [SpreadSheet](#SpreadSheet)
+- [TextEditor](#TextEditor)
 
-You can use the [editor on GitHub](https://github.com/HarirFahem/HomeWork3/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
+<div id = "back"></div>
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+
+    
+## **Introduction** 
+
+<a name="INTRO"></a>
+
+**QMainWindow** is a main window provides a framework for building an application's user interface. Qt has QMainWindow and its related classes for main window management. QMainWindow has its own layout to which you can add QToolBars, QDockWidgets, a QMenuBar, and a QStatusBar. The layout has a center area that can be occupied by any kind of widget. You can see an image of the layout below.
+
+**Qt Designer** is the Qt tool for designing and building graphical user interfaces (GUIs) with Qt Widgets. You can compose and customize your windows or dialogs in a what-you-see-is-what-you-get (WYSIWYG) manner, and test them using different styles and resolutions.
+
+Widgets and forms created with Qt Designer integrate seamlessly with programmed code, using Qt's signals and slots mechanism, so that you can easily assign behavior to graphical elements. All properties set in Qt Designer can be changed dynamically within the code. Furthermore, features like widget promotion and custom plugins allow you to use your own components with Qt Designer.
 
 ### Markdown
 

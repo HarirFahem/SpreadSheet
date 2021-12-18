@@ -110,6 +110,8 @@ GotoCell dialog and response
 
 ![Image](/search.png)
 
+![Image](/search2.png)
+
 Find Dialog ui form 
 
 Then, we added a getter to obtain the serached text:

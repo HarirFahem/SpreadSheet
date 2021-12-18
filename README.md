@@ -7,7 +7,7 @@ create a MainWindow based application using the designer
 <div id = "back"></div>
 
 
-    
+  
 ## **Introduction** 
 
 <a name="INTRO"></a>
@@ -426,19 +426,344 @@ void SpreadSheet::aboutQtSlot(){
 }
 ```
 ![Image](/aboutQt.png)
+
+Finally here is the code of the header file:
 ```javascript
+class SpreadSheet : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    SpreadSheet(QWidget *parent = nullptr);
+    ~SpreadSheet();
+
+protected:
+    void setupMainWidget();
+    void createActions();
+    void createMenus();
+    void createToolBars();
+    void makeConnexions();
+
+private slots:
+    void close();
+    void updateStatusBar(int, int); //Respond for the call changed
+    void GotoCellSlots();
+    void Search();
+    void saveslot(); //slot pour répondre à l'appel save
+    void Open();
+    void newfile();
+    void deletecell();
+    void aboutSlot();
+    void aboutQtSlot();
+    void recentfile();
+    void SaveAsSlot();
+
+private:
+    void saveContent(QString fileName); //method pour sauvegarder le contenu
+     void OpenContent(QString fileName );//method pour ouvrir le contenu
+     void loadcsv(QString fileName);
+ //Pointers
+private:
+    // --------------- Central Widget -------------//
+    QTableWidget *spreadsheet;
+    // --------------- Actions       --------------//
+    QAction * newFile;
+    QAction * open;
+    QAction * save;
+    QAction * saveAs;
+    QAction * exit;
+    QAction *cut;
+    QAction *copy;
+    QAction *paste;
+    QAction *deleteAction;
+    QAction *find;
+    QAction *row;
+    QAction *Column;
+    QAction *all;
+    QAction *goCell;
+    QAction *recalculate;
+    QAction *sort;
+    QAction *showGrid;
+    QAction *auto_recalculate;
+    QAction *about;
+    QAction *aboutQt;
+    QAction *deleteall;
+    QAction *recfiles;
+
+
+    // ---------- Menus ----------
+    QMenu *FileMenu;
+    QMenu *editMenu;
+    QMenu *toolsMenu;
+    QMenu *optionsMenu;
+    QMenu *helpMenu;
+
+
+    //  ----- - Widget pouyr la bare d'etat
+    QLabel *cellLocation;  //position de la cellule active
+    QLabel *cellFormula;   // Formuel de la cellue active
+
+    //nom du fichier courant
+    QString * currentFile;
+
+};
+
 ```
-```markdown
-```
+And here is the implemenation of all functions:
 ```javascript
-```
-```markdown
-```
-```javascript
-```
-We added the **makeConnexion()** to connect all the actions.
-here is the content of this Function:
-```javascript
+SpreadSheet::SpreadSheet(QWidget *parent)
+    : QMainWindow(parent)
+{
+    //Seting the spreadsheet
+    setupMainWidget();
+
+    // Creaeting Actions
+    createActions();
+
+    // Creating Menus
+    createMenus();
+
+
+    //Creating the tool bar
+    createToolBars();
+
+    //making the connexions
+    makeConnexions();
+
+
+    //Creating the labels for the status bar (should be in its proper function)
+    cellLocation = new QLabel("(1, 1)");
+    cellFormula = new QLabel("");
+    statusBar()->addPermanentWidget(cellLocation);
+    statusBar()->addPermanentWidget(cellFormula);
+    //initialiser le nom du fichier courant
+    currentFile=nullptr;
+    //mettre le nom du spreadsheet
+    setWindowTitle("SpreadSheet");
+}
+
+void SpreadSheet::setupMainWidget()
+{
+    spreadsheet = new QTableWidget;
+    spreadsheet->setRowCount(100);
+    spreadsheet->setColumnCount(20);
+    setCentralWidget(spreadsheet);
+}
+
+SpreadSheet::~SpreadSheet()
+{
+    delete spreadsheet;
+    // --------------- Actions       --------------//
+    delete  newFile;
+    delete  open;
+    delete  save;
+    delete  saveAs;
+    delete  exit;
+    delete cut;
+    delete copy;
+    delete paste;
+    delete deleteAction;
+    delete find;
+    delete row;
+    delete Column;
+    delete all;
+    delete goCell;
+    delete recalculate;
+    delete sort;
+    delete showGrid;
+    delete auto_recalculate;
+    delete about;
+    delete aboutQt;
+    delete recfiles;
+    // ---------- Menus ----------
+    delete FileMenu;
+    delete editMenu;
+    delete toolsMenu;
+    delete optionsMenu;
+    delete helpMenu;
+}
+
+void SpreadSheet::createActions()
+{
+    // --------- New File -------------------
+   QPixmap newIcon(":/new_file.png");
+   newFile = new QAction(newIcon, "&New", this);
+   newFile->setShortcut(tr("Ctrl+N"));
+
+
+    // --------- open file -------------------
+   QPixmap openIcon(":/open_icon.png");
+   open = new QAction(openIcon,"&Open", this);
+   open->setShortcut(tr("Ctrl+O"));
+
+    // --------- open file -------------------
+   QPixmap saveIcon(":/save_icon.png");
+   save = new QAction(saveIcon,"&Save", this);
+   save->setShortcut(tr("Ctrl+S"));
+
+    // --------- open file -------------------
+   QPixmap saveAsIcon(":/save_as_icon.png");
+   saveAs = new QAction(saveAsIcon,"save &As", this);
+
+   //------recent file -------
+   QPixmap recentIcon(":/recent_icon.png");
+   recfiles = new QAction(recentIcon,"Recent &Files",this);
+
+    // --------- open file -------------------
+   QPixmap cutIcon(":/cut_icon.png");
+   cut = new QAction(newIcon, "Cu&t", this);
+   cut->setShortcut(tr("Ctrl+X"));
+
+   // --------- Cut menu -----------------
+   QPixmap copyIcon(":/copy_icon.png");
+   copy = new QAction(copyIcon, "&Copy", this);
+   copy->setShortcut(tr("Ctrl+C"));
+
+   QPixmap pasteIcon(":/paste_icon.png");
+   paste = new QAction(pasteIcon, "&Paste", this);
+   paste->setShortcut(tr("Ctrl+V"));
+
+   QPixmap deleteIcon(":/delete_icon.png");
+   deleteAction = new QAction(deleteIcon, "&Delete", this);
+   deleteAction->setShortcut(tr("Del"));
+
+   QPixmap deleteAllIcon(":/delete_all_icon.png");
+   deleteall = new QAction(deleteAllIcon, "&DeleteAll", this);
+   deleteall->setShortcut(tr("DelAll"));
+
+   QPixmap rowIcon(":/row_icon.png");
+   row  = new QAction(rowIcon,"&Row", this);
+
+   QPixmap columnIcon(":/column_icon.png");
+   Column = new QAction(columnIcon,"&Column", this);
+
+   QPixmap allIcon(":/all_icon.png");
+   all = new QAction(allIcon,"&All", this);
+   all->setShortcut(tr("Ctrl+A"));
+
+
+
+   QPixmap findIcon(":/search_icon.png");
+   find= new QAction(newIcon, "&Find", this);
+   find->setShortcut(tr("Ctrl+F"));
+
+   QPixmap goCellIcon(":/go_to_icon.png");
+   goCell = new QAction( goCellIcon, "&Go to Cell", this);
+   deleteAction->setShortcut(tr("f5"));
+
+   QPixmap recalculateIcon(":/recalculate_icon.png");
+   recalculate = new QAction(recalculateIcon,"&Recalculate",this);
+   recalculate->setShortcut(tr("F9"));
+
+   QPixmap sortIcon(":/sort_icon.png");
+   sort = new QAction(sortIcon,"&Sort");
+
+
+
+   showGrid = new QAction("&Show Grid");
+   showGrid->setCheckable(true);
+   showGrid->setChecked(spreadsheet->showGrid());
+
+   auto_recalculate = new QAction("&Auto-recalculate");
+   auto_recalculate->setCheckable(true);
+   auto_recalculate->setChecked(true);
+
+
+   QPixmap aboutIcon(":/about_icon.png");
+   about =  new QAction(aboutIcon,"&About");
+   QPixmap aboutQtIcon(":/about_qt_icon.png");
+   aboutQt = new QAction(aboutQtIcon,"About &Qt");
+
+    // --------- exit -------------------
+   QPixmap exitIcon(":/quit_icon.png");
+   exit = new QAction(exitIcon,"E&xit", this);
+   exit->setShortcut(tr("Ctrl+Q"));
+}
+
+void SpreadSheet::close()
+{
+
+    auto reply = QMessageBox::question(this, "Exit","Do you really want to quit?");
+    if(reply == QMessageBox::Yes)
+        qApp->exit();
+}
+
+void SpreadSheet::createMenus()
+{
+    // --------  File menu -------//
+    FileMenu = menuBar()->addMenu("&File");
+    FileMenu->addAction(newFile);
+    FileMenu->addAction(open);
+    FileMenu->addAction(save);
+    FileMenu->addAction(saveAs);
+    FileMenu->addSeparator();
+    FileMenu->addAction(recfiles);
+    FileMenu->addAction(exit);
+
+
+    //------------- Edit menu --------/
+    editMenu = menuBar()->addMenu("&Edit");
+    editMenu->addAction(cut);
+    editMenu->addAction(copy);
+    editMenu->addAction(paste);
+    editMenu->addAction(deleteAction);
+    editMenu->addAction(deleteall);
+    editMenu->addSeparator();
+    QPixmap selectIcon(":/select_icon.png");
+    auto select = editMenu->addMenu(selectIcon,"&Select");
+    select->addAction(row);
+    select->addAction(Column);
+    select->addAction(all);
+
+    editMenu->addAction(find);
+    editMenu->addAction(goCell);
+
+    //-------------- Toosl menu ------------
+    toolsMenu = menuBar()->addMenu("&Tools");
+    toolsMenu->addAction(recalculate);
+    toolsMenu->addAction(sort);
+
+    //Optins menus
+    optionsMenu = menuBar()->addMenu("&Options");
+    optionsMenu->addAction(showGrid);
+    optionsMenu->addAction(auto_recalculate);
+
+
+    //----------- Help menu ------------
+    helpMenu = menuBar()->addMenu("&Help");
+    helpMenu->addAction(about);
+    helpMenu->addAction(aboutQt);
+}
+
+void SpreadSheet::createToolBars()
+{
+
+    //Creer une barre d'outils
+    auto toolbar1 = addToolBar("File");
+
+
+    //Ajouter des actions a cette bar
+    toolbar1->addAction(newFile);
+    toolbar1->addAction(save);
+    toolbar1->addSeparator();
+    toolbar1->addAction(exit);
+    toolbar1->addAction(open);
+    toolbar1->addAction(saveAs);
+
+
+    //Creer une autre tool bar
+    auto toolbar2  = addToolBar("ToolS");
+    toolbar2->addAction(goCell);
+    toolbar2->addAction(all);
+}
+
+void SpreadSheet::updateStatusBar(int row, int col)
+{
+    QString cell{"(%0, %1)"};
+   cellLocation->setText(cell.arg(row+1).arg(col+1));
+
+}
+
 void SpreadSheet::makeConnexions()
 {
 
@@ -446,14 +771,19 @@ void SpreadSheet::makeConnexions()
    connect(all, &QAction::triggered,spreadsheet, &QTableWidget::selectAll);
    connect(row, &QAction::triggered,spreadsheet, &QTableWidget::selectRow);
    connect(Column, &QAction::triggered, spreadsheet, &QTableWidget::selectColumn);
-   //connection for the clear all 
+   //connection for the clear all
    connect(deleteall, &QAction::triggered,spreadsheet, &QTableWidget::clearContents);
    //connection for the delete cell content
    connect(deleteAction, &QAction::triggered,this, &SpreadSheet::deletecell);
+
+
    // Connection for the  show grid
    connect(showGrid, &QAction::triggered,spreadsheet, &QTableWidget::setShowGrid);
+
    //Connection for the exit button
    connect(exit, &QAction::triggered, this, &SpreadSheet::close);
+
+
    //connectting the chane of any element in the spreadsheet with the update status bar
    connect(spreadsheet, &QTableWidget::cellClicked, this,  &SpreadSheet::updateStatusBar);
    //connection entre le go et le slot
@@ -473,41 +803,204 @@ void SpreadSheet::makeConnexions()
    connect(recfiles,&QAction::triggered,this,&SpreadSheet::recentfile);
    //connect saveas
    connect(saveAs,&QAction::triggered,this,&SpreadSheet::SaveAsSlot);
+
+}
+void SpreadSheet::Search()
+{
+  FindDialog F;
+  auto repl = F.exec();
+
+/*  auto q=F.getText();
+
+     for(int row=1; row< spreadsheet->rowCount(); row++) {
+         for(int col=1; row< spreadsheet->columnCount(); col++) {
+             if(q == spreadsheet->item(row,col)->text()) {
+                 spreadsheet->setCurrentCell(row,col);
+             }
+         }
+     }
+*/
+
+  if(repl == FindDialog::Accepted){
+      auto text=F.getText();
+
+      for(auto i =0;i<spreadsheet->rowCount();i++){
+          for(auto j =0;j<spreadsheet->columnCount();j++){
+            if(spreadsheet-> item(i,j)!=nullptr && spreadsheet-> item(i,j)->text().contains(text) )
+                spreadsheet->setCurrentCell( i, j);
+
+      }
+  }
+  }
+
+}
+void SpreadSheet::GotoCellSlots()
+{
+    //declarer le dialog
+    GoDialog D;
+    //l'executer
+    auto repl = D.exec();
+    if(repl==GoDialog::Accepted)
+    {  //extraire le row et le column
+        auto text = D.getText();
+        int row = text[0].toLatin1()-'A';
+        //supprimer le premier caractere
+        text= text.remove(0,1);
+        int col =text.toInt();
+        spreadsheet->setCurrentCell(row,col);
+    }
+
+}
+void SpreadSheet::saveslot()
+{
+  //vérifier si on a pas un nom de fichier
+    if(!currentFile){
+        QFileDialog D;
+        auto filename=D.getSaveFileName();
+        //changer le nom du fichier
+        currentFile=new QString(filename);
+        //changer le title de l'application
+        setWindowTitle(*currentFile);
+    }
+    //fonction privée pour sauvergarder le contenu
+    saveContent(*currentFile);
+}
+void SpreadSheet::saveContent(QString fileName)
+{
+
+    //ouvrir le fichier en mode de lecture
+    QFile file(fileName);
+    if(file.open(QIODevice::WriteOnly)){
+     QTextStream out(&file);
+     //boucle sur les cellules pour sauvergarder leur contenu
+     for(int i=0;i<spreadsheet->rowCount();i++)
+         for(int j=0;j<spreadsheet->columnCount();j++)
+         {
+             auto cell = spreadsheet->item(i,j);
+             if(cell){
+                 out <<i << "," <<j <<","<< cell->text() << endl;
+             }
+         }
+    }
+    //fermer la connexion avec le fichier
+    file.close();
+
+}
+void SpreadSheet::Open(){
+
+      QFileDialog D;
+     auto filename=D.getOpenFileName(this,("open file"));
+
+      //change the name of the file
+      currentFile = new QString(filename);
+      setWindowTitle(*currentFile);
+      if (currentFile->endsWith(".csv"))
+                loadcsv(filename);
+                else OpenContent(filename);
+}
+void SpreadSheet::OpenContent(QString fileName){
+    QFile file(fileName);
+    if(file.open(QIODevice::ReadOnly)){
+            QTextStream in(&file);
+            while(!in.atEnd()){
+                QString line;
+                line=in.readLine();
+                //separer par virgule
+                auto tokens = line.split(QChar(','));
+                //num row
+                int row=tokens[0].toInt();
+                int col=tokens[1].toInt();
+                auto cell = new QTableWidgetItem(tokens[2]);
+                spreadsheet->setItem(row,col,cell);
+            }
+}
+}
+void SpreadSheet::newfile(){
+
+
+    SpreadSheet *mainWin = new SpreadSheet;
+                 mainWin->show();
+}
+void SpreadSheet::deletecell(){
+
+    foreach (QTableWidgetItem *i, spreadsheet->selectedItems())
+                i->setText("");
+
+}
+void SpreadSheet::aboutSlot(){
+    QMessageBox::about(this,"about", "My spreadsheet!!");
+}
+
+void SpreadSheet::aboutQtSlot(){
+    QMessageBox::aboutQt(this, "Your Qt");
+}
+void SpreadSheet::SaveAsSlot(){
+    if(!currentFile)
+    {
+        QFileDialog D;
+        auto filename=D.getSaveFileName(this,("save file"),"",("csv File(*.csv);;Text files (*.txt);;XML files (*.xml);;All files (*.*)"));
+        //changer le nom de fichier
+        currentFile = new QString(filename);
+        //changer le title de l'application
+        setWindowTitle(*currentFile);
+
+    }
+    saveContent(*currentFile);
+}
+void SpreadSheet::loadcsv(QString filename){
+    QFile file(filename);
+    if (file.open(QIODevice::ReadOnly )) {
+        QTextStream in(&file);
+
+ int i=0;
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        // now, line will be a string of the whole line, if you're trying to read a CSV or something, you can split the string
+        auto list = line.split(QChar(';'));
+        // process the line here
+
+        for(int j=0;j<list.length();j++){
+            auto contenu=new  QTableWidgetItem (list[j]);
+             spreadsheet->setItem(i,j,contenu);
+
+        }
+        i++;
+
+    }
+}
 }
 ```
-Finally, we obtain:
+
+
+
+
+```javascript
+```
+```markdown
+```
+```javascript
+```
+```markdown
+```
+```javascript
+```
+So we obtain:
 
 ![Image](/spread1.png)
 ![Image](/spread2.png)
-SpreadSheet Application with actions and menus 
-### Markdown
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## Text Editor
 
-```markdown
-Syntax highlighted code block
+<a name="TextEditor"></a>  
 
-# Header 1
-## Header 2
-### Header 3
+A **text editor** is a type of computer program that edits plain text. Such programs are sometimes known as "notepad" software, following the naming of Microsoft Notepad. Text editors are provided with operating systems and software development packages, and can be used to change files such as configuration files, documentation files and programming language source code.
 
-- Bulleted
-- List
+we designed an application which is from QT Examples and it is a simple text editor program build arount QPlain Text.
 
-1. Numbered
-2. List
+![Image](/wordtext.png)
 
-**Bold** and _Italic_ and `Code` text
+Our Example of Text Editor
 
-[Link](url) and ![Image](src)
-```
+![Image](/word.png)
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
 
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/HarirFahem/HomeWork3/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.

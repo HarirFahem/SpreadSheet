@@ -367,6 +367,10 @@ void SpreadSheet::newfile(){
                  mainWin->show();
 }
 ```
+![Image](/newfile.png)
+
+new file illustration
+
 c.for the selection Item, we have select all, select row and select column
 in the function makeConnexions we have the following code:
 ```javascript
@@ -374,12 +378,25 @@ in the function makeConnexions we have the following code:
    connect(row, &QAction::triggered,spreadsheet, &QTableWidget::selectRow);
    connect(Column, &QAction::triggered, spreadsheet, &QTableWidget::selectColumn);
 ```
+![Image](/selectall.png)
+
+SelectAll 
+
+![Image](/selectrow.png)
+
+Select Row 
+
+![Image](/selectcol.png)
+
+Select Column 
+
 d. for the delete action: we have delete all:
 in the function makeConnexions() we wrote:
 ```javascript
    connect(deleteall, &QAction::triggered,spreadsheet, &QTableWidget::clearContents);
 ```
-and we have delete the contenet of a cell 
+![Image](/deleteall.png)
+and we have delete the content of a cell 
 In the function makeConnections() we wrote:
 ```javascript
    connect(deleteAction, &QAction::triggered,this, &SpreadSheet::deletecell);
@@ -393,6 +410,7 @@ void SpreadSheet::deletecell(){
                 i->setText("");
 }
 ```
+![Image](/deletecell.png)
 e. for the item about, we have about and aboutQt :
 For about , we declared a slot called aboutSlot(), then we implement it:
 ```javascript
@@ -400,12 +418,14 @@ void SpreadSheet::aboutSlot(){
     QMessageBox::about(this,"about", "My spreadsheet!!");
 }
 ```
+![Image](/about.png)
 For aboutQT , we declared a slot named aboutQtSlot(), then we implement it:
 ```javascript
 void SpreadSheet::aboutQtSlot(){
     QMessageBox::aboutQt(this, "Your Qt");
 }
 ```
+![Image](/aboutQt.png)
 ```javascript
 ```
 ```markdown

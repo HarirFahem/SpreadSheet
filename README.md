@@ -1004,3 +1004,153 @@ Our Example of Text Editor
 ![Image](/word.png)
 
 
+To start with, we designed textedit window in the followinf form( we added a menu bar, the we add tool bars and the text edit):
+
+![Image](/1.png)
+ 
+Then , for adding the icons, we added a ressource file for uploading the images of the icons, we add each icon in its place: 
+We double click left in the action , a window appears and we choose resource , then we choose the appropriate icon as is shown in this image: 
+
+![Image](/iconressource.png)
+
+for coding each action, we click left in the action, we select go to slot, then a window appears and we select triggered(), then we code:
+
+![Image](/gotoslot.png)
+
+* For the Action of **new file**:
+Here is the implementation of the method:
+```javascript
+void Textedit::on_actionNew_triggered()
+{
+  Filename= "";
+  ui->textEdit->setPlainText("");
+}
+```
+* For the Action of **Open file**:
+Here is the implementation of the method:
+```javascript
+void Textedit::on_actionOpen_triggered()
+{
+ QString file = QFileDialog::getOpenFileName(this,"Open file");
+
+  if(!file.isEmpty()){
+         QFile sFile(file);
+         if(sFile.open(QFile::ReadOnly | QFile::Text)){
+            Filename= file ;
+             QTextStream in(&sFile);
+              QString text = in.readAll();
+              sFile.close();
+              ui->textEdit->setPlainText(text);
+
+         }
+
+}
+}
+```
+* For the **Cut** Action:
+Here is the implementation of the method:
+```javascript
+void Textedit::on_actionCut_triggered()
+{
+ ui->textEdit->cut();
+}
+
+```
+* For the **Save** Action:
+Here is the implementation of the method:
+```javascript
+void Textedit::on_action_Save_triggered()
+{
+  QFile sFile(Filename);
+  if(sFile.open(QFile::WriteOnly | QFile::Text)){
+      QTextStream out (&sFile);
+      out  <<  ui->textEdit->toPlainText();
+      sFile.flush();
+      sFile.close();
+
+  }
+}
+```
+* For the **Save As** Action:
+Here is the implementation of the method:
+```javascript
+void Textedit::on_actionSave_As_triggered()
+{
+    QString file = QFileDialog::getSaveFileName(this,"Open file");
+
+     if(!file.isEmpty()){
+
+        Filename = file;
+        on_action_Save_triggered();
+
+            }
+
+
+}
+```
+* For the **Exit** Action:
+Here is the implementation of the method:
+```javascript
+void Textedit::on_actionE_xit_triggered()
+{
+  ui->centralwidget->close();
+}
+```
+* For the **Copy** Action:
+Here is the implementation of the method:
+```javascript
+void Textedit::on_action_Copy_triggered()
+{
+ ui->textEdit->copy();
+}
+```
+* For the **Paste** Action:
+Here is the implementation of the method:
+```javascript
+void Textedit::on_action_Paste_triggered()
+{
+  ui->textEdit->paste();
+}
+
+```
+* For the **About** Action:
+Here is the implementation of the method:
+```javascript
+void Textedit::on_action_About_triggered()
+{
+    QMessageBox::about(this,"about", "My Text editor");
+
+
+}
+```
+* For the **About Qt** Action:
+Here is the implementation of the method:
+```javascript
+void Textedit::on_actionAbout_Qt_triggered()
+{
+QMessageBox::aboutQt(this, "Your Qt");
+}
+```
+* For the **Undo** Action:
+Here is the implementation of the method:
+```javascript
+void Textedit::on_actionUndo_triggered()
+{
+    ui->textEdit->undo();
+}
+
+```
+* For the **Redo** Action:
+Here is the implementation of the method:
+```javascript
+void Textedit::on_actionRedo_triggered()
+{
+    ui->textEdit->redo();
+}
+```
+
+
+![Image](/.png)
+
+
+

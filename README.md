@@ -416,6 +416,7 @@ void SpreadSheet::deletecell(){
 }
 ```
 ![Image](/deletecell.png)
+
 e. for the item about, we have about and aboutQt :
 For about , we declared a slot called aboutSlot(), then we implement it:
 ```javascript
@@ -424,6 +425,7 @@ void SpreadSheet::aboutSlot(){
 }
 ```
 ![Image](/about.png)
+
 For aboutQT , we declared a slot named aboutQtSlot(), then we implement it:
 ```javascript
 void SpreadSheet::aboutQtSlot(){
@@ -432,6 +434,32 @@ void SpreadSheet::aboutQtSlot(){
 ```
 ![Image](/aboutQt.png)
 
+f.for cut , copy and paste actions:
+We declared three slots in the header file:
+```javascript
+private slots:
+    void copySlot();
+    void pasteSlot();
+    void cutSlot();
+```
+Then, we implement them:
+```javascript
+void SpreadSheet::cutSlot()
+{
+     copySlot();
+     deletecell();
+}
+void SpreadSheet::copySlot(){
+    clipboard->clear();
+    auto cell = spreadsheet->currentItem();
+    if(cell)
+        clipboard->setText(cell->text(), QClipboard::Clipboard);
+}
+
+void SpreadSheet::pasteSlot(){
+    spreadsheet->setItem(spreadsheet->currentRow(), spreadsheet->currentColumn(),new QTableWidgetItem(clipboard->text()));
+}
+```
  [(**Back to top**)](#back)
  
  
@@ -465,6 +493,9 @@ private slots:
     void aboutQtSlot();
     void recentfile();
     void SaveAsSlot();
+    void copySlot();
+    void pasteSlot();
+    void cutSlot();
 
 private:
     void saveContent(QString fileName); //method pour sauvegarder le contenu
@@ -506,6 +537,7 @@ private:
     QMenu *optionsMenu;
     QMenu *helpMenu;
 
+    QClipboard *clipboard;
 
     //  ----- - Widget pouyr la bare d'etat
     QLabel *cellLocation;  //position de la cellule active
@@ -515,7 +547,6 @@ private:
     QString * currentFile;
 
 };
-
 ```
 And here is the implemenation of all functions:
 ```javascript
@@ -811,6 +842,9 @@ void SpreadSheet::makeConnexions()
    connect(recfiles,&QAction::triggered,this,&SpreadSheet::recentfile);
    //connect saveas
    connect(saveAs,&QAction::triggered,this,&SpreadSheet::SaveAsSlot);
+   //connexion of copy and paste
+   connect(copy, &QAction::triggered, this, &SpreadSheet::copySlot);
+   connect(paste, &QAction::triggered, this, &SpreadSheet::pasteSlot);
 
 }
 void SpreadSheet::Search()
@@ -977,6 +1011,29 @@ void SpreadSheet::loadcsv(QString filename){
     }
 }
 }
+void SpreadSheet::cutSlot()
+{
+     copySlot();
+     deletecell();
+}
+void SpreadSheet::copySlot(){
+    clipboard->clear();
+    auto cell = spreadsheet->currentItem();
+    if(cell)
+        clipboard->setText(cell->text(), QClipboard::Clipboard);
+}
+
+void SpreadSheet::pasteSlot(){
+    spreadsheet->setItem(spreadsheet->currentRow(), spreadsheet->currentColumn(),new QTableWidgetItem(clipboard->text()));
+}
+void SpreadSheet::recentfile()
+{
+
+    //recentfiles
+    QStringList *recentFile;
+    QFileDialog D;
+    auto filename=D.getSaveFileName();
+
 ```
 
 So we obtain:

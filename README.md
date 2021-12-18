@@ -104,8 +104,54 @@ void SpreadSheet::GotoCellSlots()
 ```
 ![Image](/gotocell.png)
 
+GotoCell dialog and response
+
+3.We added Find Dialog, it prompts the user for an input and seek a cell that contains the entered text. For that , We created this following Ui:
+![Image](/search.png)
+
+Find Dialog ui form 
+
+Then, we added a getter to obtain the serached text:
+
+```javascript
+QString FindDialog::getText() const
+{
+    return ui->lineEdit->text();
+}
+```
+we have declared a private slot called search:
+```javascript
+private slots:
+    void Search();
+```
+Here is the implementation of the connexion between the dialog and the find function:
+
+```javascript
+void SpreadSheet::Search()
+{
+  FindDialog F;
+  auto repl = F.exec();
+  if(repl == FindDialog::Accepted){
+      auto text=F.getText();
+      for(auto i =0;i<spreadsheet->rowCount();i++){
+          for(auto j =0;j<spreadsheet->columnCount();j++){
+            if(spreadsheet-> item(i,j)!=nullptr && spreadsheet-> item(i,j)->text().contains(text) )
+                spreadsheet->setCurrentCell( i, j);
+      }
+  }
+  }
+}
+```
+![Image](/finddialog.png)
+
+Find Dialog illustration
 ```javascript
 ```
+```javascript
+```
+```javascript
+```
+
 ```javascript
 ```
 ```javascript

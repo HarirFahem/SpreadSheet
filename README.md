@@ -46,7 +46,10 @@ void SpreadSheet::updateStatusBar(int row, int col)
 ```
 2.we add the function for the **gocell** action,we created a Dialog for the user to select a cell, for that, first we created a Form Class, the using the designer we obtain the form of cell location, in addition we added the regular expression validator for the lineEdit , and finally we added a public getter for the line edit text to get the cell address.
 Here is the Form of Cell location:
-[!Image](/cellLocation.png)
+
+![Image](/cellLocation.png)
+UI components of the Go Dialog
+
 Here is the code of the regular expression validator and the add of the pubic Getter
 ```javascript
 
@@ -65,7 +68,48 @@ QString GoDialog::getText()const
 }
 
 ```
+We created a connexion between the GoCell action:
+first we create the private slot called goCellSlot to respond to the trigger:
 
+```javascript
+private slots:
+    void GotoCellSlots();
+```
+Then we connected the action to its proper slot in the makeConnexions function:
+
+```javascript
+   //connection entre le go et le slot
+   connect(goCell,&QAction::triggered,this,&SpreadSheet::GotoCellSlots);
+```
+and there in the implementation for the GotoCellSlots() function:
+
+```javascript
+void SpreadSheet::GotoCellSlots()
+{
+    //declarer le dialog
+    GoDialog D;
+    //l'executer
+    auto repl = D.exec();
+    if(repl==GoDialog::Accepted)
+    {  //extraire le row et le column
+        auto text = D.getText();
+        int row = text[0].toLatin1()-'A';
+        //supprimer le premier caractere
+        text= text.remove(0,1);
+        int col =text.toInt();
+        spreadsheet->setCurrentCell(row,col);
+    }
+
+}
+```
+![Image](/gotocell.png)
+
+```javascript
+```
+```javascript
+```
+```javascript
+```
 
 We added the **makeConnexion()** to connect all the actions.
 here is the content of this Function:

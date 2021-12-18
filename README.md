@@ -12,7 +12,7 @@ create a MainWindow based application using the designer
 
 <a name="INTRO"></a>
 
-"" ** Programs must be written for people to read, and only incidentally for machines to execute ** ""
+"" **Programs must be written for people to read, and only incidentally for machines to execute** ""
 
 **QMainWindow** is a main window provides a framework for building an application's user interface. Qt has QMainWindow and its related classes for main window management. QMainWindow has its own layout to which you can add QToolBars, QDockWidgets, a QMenuBar, and a QStatusBar. The layout has a center area that can be occupied by any kind of widget. You can see an image of the layout below.
 

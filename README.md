@@ -1173,6 +1173,8 @@ void Textedit::on_actionRedo_triggered()
 
 Redo Illustration
 
+ >**In This Zip we have the WordTextProject** [TextEditor.zip](https://github.com/HarirFahem/HomeWork3/blob/main/TextEditor.zip) 
+
  [(**Back to top**)](#back)
     
 Made By:

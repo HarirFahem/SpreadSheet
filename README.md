@@ -29,7 +29,84 @@ Widgets and forms created with Qt Designer integrate seamlessly with programmed 
 
 ### SpreadSheet 
 <a name="SpreadSheet"></a>
-We wrote the code for the graphical and set of actions for our main SpreadSheet application, now we will wite a set of basic fonctionnality.
+We wrote the code for the graphical and set of actions for our main SpreadSheet application, now we will write a set of basic functionality.
+we will start with the connections made for spreadsheet:
+1.the **updateStatusBar** takes two ints in order to synchronize with the selected item from spreadsheet, it changes the cellLocation text with the current cell coordinate.
+```javascript
+void updateStatusBar(int, int); //Respond for the call changed
+```
+Here is the implementation of this function
+```javascript
+void SpreadSheet::updateStatusBar(int row, int col)
+{
+    QString cell{"(%0, %1)"};
+   cellLocation->setText(cell.arg(row+1).arg(col+1));
+
+}
+```
+2.we add the function for the **gocell** action,we created a Dialog for the user to select a cell, for that, first we created a Form Class, the using the designer we obtain the form of cell location, in addition we added the regular expression validator for the lineEdit , and finally we added a public getter for the line edit text to get the cell address.
+Here is the Form of Cell location:
+[!Image](/cellLocation.png)
+Here is the code of the regular expression validator and the add of the pubic Getter
+```javascript
+
+    ui(new Ui::GoDialog)
+{
+    ui->setupUi(this);
+    //Définir l'expression nregulière
+    QRegExp reg{"[A-Z][1-9][0-9]"};
+    //validateur pour le lineedit
+    ui->lineEdit_2->setValidator(new QRegExpValidator(reg));
+
+}
+QString GoDialog::getText()const
+{
+    return ui->lineEdit_2->text();
+}
+
+```
+
+
+We added the **makeConnexion()** to connect all the actions.
+here is the content of this Function:
+```javascript
+void SpreadSheet::makeConnexions()
+{
+
+   // --------- Connexion for the  select all action ----/
+   connect(all, &QAction::triggered,spreadsheet, &QTableWidget::selectAll);
+   connect(row, &QAction::triggered,spreadsheet, &QTableWidget::selectRow);
+   connect(Column, &QAction::triggered, spreadsheet, &QTableWidget::selectColumn);
+   //connection for the clear all 
+   connect(deleteall, &QAction::triggered,spreadsheet, &QTableWidget::clearContents);
+   //connection for the delete cell content
+   connect(deleteAction, &QAction::triggered,this, &SpreadSheet::deletecell);
+   // Connection for the  show grid
+   connect(showGrid, &QAction::triggered,spreadsheet, &QTableWidget::setShowGrid);
+   //Connection for the exit button
+   connect(exit, &QAction::triggered, this, &SpreadSheet::close);
+   //connectting the chane of any element in the spreadsheet with the update status bar
+   connect(spreadsheet, &QTableWidget::cellClicked, this,  &SpreadSheet::updateStatusBar);
+   //connection entre le go et le slot
+   connect(goCell,&QAction::triggered,this,&SpreadSheet::GotoCellSlots);
+   connect(find,&QAction::triggered,this,&SpreadSheet::Search);
+   //connection de save file
+   connect(save, &QAction::triggered,this,&SpreadSheet::saveslot);
+   //connection du open file
+   connect(open,&QAction::triggered,this,&SpreadSheet::Open);
+   //connection du new file
+   connect(newFile,&QAction::triggered,this,&SpreadSheet::newfile);
+   //connect du slot
+   connect(about,&QAction::triggered,this,&SpreadSheet::aboutSlot);
+   //connect du Qtslot
+   connect(aboutQt,&QAction::triggered,this,&SpreadSheet::aboutQtSlot);
+   //connect du recent files
+   connect(recfiles,&QAction::triggered,this,&SpreadSheet::recentfile);
+   //connect saveas
+   connect(saveAs,&QAction::triggered,this,&SpreadSheet::SaveAsSlot);
+}
+```
+Finally, we obtain:
 
 ![Image](/spread1.png)
 ![Image](/spread2.png)

@@ -107,6 +107,7 @@ void SpreadSheet::GotoCellSlots()
 GotoCell dialog and response
 
 3.We added Find Dialog, it prompts the user for an input and seek a cell that contains the entered text. For that , We created this following Ui:
+
 ![Image](/search.png)
 
 Find Dialog ui form 

@@ -289,6 +289,8 @@ void SpreadSheet::Open(){
 
 open illustration
 
+ [(**Back to top**)](#back)
+ 
 6.We added a function that allow the code for reading a csv file in our spreadsheet
 We delcared a function in the header file:
 ```markdown
@@ -430,6 +432,9 @@ void SpreadSheet::aboutQtSlot(){
 ```
 ![Image](/aboutQt.png)
 
+ [(**Back to top**)](#back)
+ 
+ 
 Finally here is the code of the header file:
 ```javascript
 class SpreadSheet : public QMainWindow
@@ -974,24 +979,14 @@ void SpreadSheet::loadcsv(QString filename){
 }
 ```
 
-
-
-
-```javascript
-```
-```markdown
-```
-```javascript
-```
-```markdown
-```
-```javascript
-```
 So we obtain:
 
 ![Image](/spread1.png)
 ![Image](/spread2.png)
 
+
+ [(**Back to top**)](#back)
+ 
 ## Text Editor
 
 <a name="TextEditor"></a>  
@@ -1020,6 +1015,9 @@ for coding each action, we click left in the action, we select go to slot, then 
 
 ![Image](/gotoslot.png)
 
+
+ [(**Back to top**)](#back)
+ 
 * For the Action of **new file**: 
 Here is the implementation of the method:
 ```javascript
@@ -1060,6 +1058,9 @@ void Textedit::on_actionCut_triggered()
 
 ```
 ![Image](/cutpaste.png)
+
+Cut Paste illustration
+
 * For the **Save** Action:
 Here is the implementation of the method:
 ```javascript
@@ -1094,6 +1095,10 @@ void Textedit::on_actionSave_As_triggered()
 ```
 ![Image](/saveas.png)
 
+Save As illustration
+
+ [(**Back to top**)](#back)
+
 * For the **Exit** Action:
 Here is the implementation of the method:
 ```javascript
@@ -1111,6 +1116,9 @@ void Textedit::on_action_Copy_triggered()
 }
 ```
 ![Image](/copypaste.png)
+
+Copy Paste Illustration
+
 * For the **Paste** Action:
 Here is the implementation of the method:
 ```javascript
@@ -1147,6 +1155,11 @@ void Textedit::on_actionUndo_triggered()
 }
 
 ```
+
+![Image](/undoo.png)
+
+Undo Illustration
+
 * For the **Redo** Action:
 Here is the implementation of the method:
 ```javascript
@@ -1156,8 +1169,14 @@ void Textedit::on_actionRedo_triggered()
 }
 ```
 
+![Image](/redoo.png)
 
-![Image](/.png)
+Redo Illustration
 
+ [(**Back to top**)](#back)
+    
+Made By:
+* Khadija Fahem
+* Wafa Harir
 
 

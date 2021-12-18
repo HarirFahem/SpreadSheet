@@ -31,6 +31,7 @@ Widgets and forms created with Qt Designer integrate seamlessly with programmed 
 <a name="SpreadSheet"></a>
 We wrote the code for the graphical and set of actions for our main SpreadSheet application, now we will write a set of basic functionality.
 we will start with the connections made for spreadsheet:
+
 1.the **updateStatusBar** takes two ints in order to synchronize with the selected item from spreadsheet, it changes the cellLocation text with the current cell coordinate.
 ```javascript
 void updateStatusBar(int, int); //Respond for the call changed
@@ -108,7 +109,7 @@ GotoCell dialog and response
 
 3.We added Find Dialog, it prompts the user for an input and seek a cell that contains the entered text. For that , We created this following Ui:
 
-![Image](/search .png)
+![Image](/search.png)
 
 ![Image](/search2.png)
 
@@ -148,18 +149,273 @@ void SpreadSheet::Search()
 ![Image](/finddialog.png)
 
 Find Dialog illustration
-```javascript
+
+4.saving the file, either the function save or save as, those functions allow saving the data to a storage location, we choose a simple format that store the coordinates and the content of the non empty cells
+* for the save function , we wrote a private function  
+```markdown
+private:
+void saveContent(QString fileName); 
 ```
+Here is the implementation of this function:
 ```javascript
+void SpreadSheet::saveContent(QString fileName)
+{
+    //ouvrir le fichier en mode de lecture
+    QFile file(fileName);
+    if(file.open(QIODevice::WriteOnly)){
+     QTextStream out(&file);
+     //boucle sur les cellules pour sauvergarder leur contenu
+     for(int i=0;i<spreadsheet->rowCount();i++)
+         for(int j=0;j<spreadsheet->columnCount();j++)
+         {
+             auto cell = spreadsheet->item(i,j);
+             if(cell){
+                 out <<i << "," <<j <<","<< cell->text() << endl;
+             }
+         }
+    }
+    //fermer la connexion avec le fichier
+    file.close();
+
+}
 ```
+We declared a private slot called saveslot:
+```markdown
+private slots:
+     void saveslot();
+```
+that respond to the action trigger in the header, it is use to save the content of the file , here is its implementation:
 ```javascript
+void SpreadSheet::saveslot()
+{
+  //vérifier si on a pas un nom de fichier
+    if(!currentFile){
+        QFileDialog D;
+        auto filename=D.getSaveFileName();
+        //changer le nom du fichier
+        currentFile=new QString(filename);
+        //changer le title de l'application
+        setWindowTitle(*currentFile);
+    }
+    //fonction privée pour sauvergarder le contenu
+    saveContent(*currentFile);
+}
+```
+for the connexion in makeconnexions() function:
+```markdown
+   connect(save, &QAction::triggered,this,&SpreadSheet::saveslot);
+```
+![Image](/save.png)
+
+save illustration
+
+* For saveAs, which export the date in a specific format like csv file of pds..
+We declared a slot called SaveAsSlot():
+```markdown
+private slots:
+    void SaveAsSlot();
+```
+and for the implemenation of this function :
+```javascript
+void SpreadSheet::SaveAsSlot(){
+    if(!currentFile)
+    {
+        QFileDialog D;
+        auto filename=D.getSaveFileName(this,("save file"),"",("csv File(*.csv);;Text files (*.txt);;XML files (*.xml);;All files (*.*)"));
+        //changer le nom de fichier
+        currentFile = new QString(filename);
+        //changer le title de l'application
+        setWindowTitle(*currentFile);
+
+    }
+    saveContent(*currentFile);
+}
 ```
 
-```javascript
-```
-```javascript
-```
+![Image](/saveas.png)
 
+saveAs illustration
+
+5. for the load file, this function is used to import the date into spreadsheet
+We declared a function called opencontent in the header file:
+```javascript
+private:
+ void OpenContent(QString fileName );
+```
+Here is the implementation of this function
+```javascript
+void SpreadSheet::OpenContent(QString fileName){
+    QFile file(fileName);
+    if(file.open(QIODevice::ReadOnly)){
+            QTextStream in(&file);
+            while(!in.atEnd()){
+                QString line;
+                line=in.readLine();
+                //separer par virgule
+                auto tokens = line.split(QChar(','));
+                //num row
+                int row=tokens[0].toInt();
+                int col=tokens[1].toInt();
+                auto cell = new QTableWidgetItem(tokens[2]);
+                spreadsheet->setItem(row,col,cell);
+            }
+}
+}
+```
+For the load file action, we have an operational open function, first we create a dlot to respond to the action trigger on the header
+```markdown
+private slots:
+   void Open();
+```
+Here is the implementation of this function:
+```javascript
+void SpreadSheet::Open(){
+
+      QFileDialog D;
+     auto filename=D.getOpenFileName(this,("open file"));
+
+      //change the name of the file
+      currentFile = new QString(filename);
+      setWindowTitle(*currentFile);
+      if (currentFile->endsWith(".csv"))
+                loadcsv(filename);
+                else OpenContent(filename);
+}
+```
+![Image](/open.png)
+
+open illustration
+
+6.We added a function that allow the code for reading a csv file in our spreadsheet
+We delcared a function in the header file:
+```markdown
+private:
+   void loadcsv(QString fileName);
+```
+here is the implementation of this function:
+```javascript
+void SpreadSheet::loadcsv(QString filename){
+    QFile file(filename);
+    if (file.open(QIODevice::ReadOnly )) {
+        QTextStream in(&file);
+
+ int i=0;
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        // now, line will be a string of the whole line, if you're trying to read a CSV or something, you can split the string
+        auto list = line.split(QChar(';'));
+        // process the line here
+
+        for(int j=0;j<list.length();j++){
+            auto contenu=new  QTableWidgetItem (list[j]);
+             spreadsheet->setItem(i,j,contenu);
+        }
+        i++;
+    }
+}
+}
+```
+![Image](/opencsv.png)
+
+Open Csv File illustration
+
+7.We added a function that shows the most five recent files
+We declared a slot called recentfile
+```markdown
+private slots:
+   void recentfile();
+```
+And here is the implementation of this function
+```javascript
+void SpreadSheet::recentfile()
+{
+
+    //recentfiles
+    QStringList *recentFile;
+ 
+}
+```
+a. We added a slot called close to quit the window
+First, we declare the slot in the header file
+```markdown
+private slots:
+   void close();
+```
+Then we implement the function in the cpp file 
+
+```javascript
+void SpreadSheet::close()
+{
+
+    auto reply = QMessageBox::question(this, "Exit","Do you really want to quit?");
+    if(reply == QMessageBox::Yes)
+        qApp->exit();
+}
+```
+b.We added a slot called new file to open a new spreadsheet
+we delcare the slot in the header file:
+```markdown
+private slots:
+    void newfile();
+```
+Then, we implement the function in the cpp file:
+```javascript
+void SpreadSheet::newfile(){
+
+
+    SpreadSheet *mainWin = new SpreadSheet;
+                 mainWin->show();
+}
+```
+c.for the selection Item, we have select all, select row and select column
+in the function makeConnexions we have the following code:
+```javascript
+   connect(all, &QAction::triggered,spreadsheet, &QTableWidget::selectAll);
+   connect(row, &QAction::triggered,spreadsheet, &QTableWidget::selectRow);
+   connect(Column, &QAction::triggered, spreadsheet, &QTableWidget::selectColumn);
+```
+d. for the delete action: we have delete all:
+in the function makeConnexions() we wrote:
+```javascript
+   connect(deleteall, &QAction::triggered,spreadsheet, &QTableWidget::clearContents);
+```
+and we have delete the contenet of a cell 
+In the function makeConnections() we wrote:
+```javascript
+   connect(deleteAction, &QAction::triggered,this, &SpreadSheet::deletecell);
+
+```
+and here is the implemenation of the function deletecell() which is declared in the header file:
+```javascript
+void SpreadSheet::deletecell(){
+
+    foreach (QTableWidgetItem *i, spreadsheet->selectedItems())
+                i->setText("");
+}
+```
+e. for the item about, we have about and aboutQt :
+For about , we declared a slot called aboutSlot(), then we implement it:
+```javascript
+void SpreadSheet::aboutSlot(){
+    QMessageBox::about(this,"about", "My spreadsheet!!");
+}
+```
+For aboutQT , we declared a slot named aboutQtSlot(), then we implement it:
+```javascript
+void SpreadSheet::aboutQtSlot(){
+    QMessageBox::aboutQt(this, "Your Qt");
+}
+```
+```javascript
+```
+```markdown
+```
+```javascript
+```
+```markdown
+```
+```javascript
+```
 We added the **makeConnexion()** to connect all the actions.
 here is the content of this Function:
 ```javascript

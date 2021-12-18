@@ -26,7 +26,14 @@ Widgets and forms created with Qt Designer integrate seamlessly with programmed 
 
  >**In This Zip you will have the project** [Homework3.zip]() 
 
+
+### SpreadSheet 
 <a name="SpreadSheet"></a>
+We wrote the code for the graphical and set of actions for our main SpreadSheet application, now we will wite a set of basic fonctionnality.
+
+![Image](/spread1.png)
+![Image](/spread2.png)
+SpreadSheet Application with actions and menus 
 ### Markdown
 
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for

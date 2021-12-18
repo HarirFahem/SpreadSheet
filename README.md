@@ -154,9 +154,11 @@ Find Dialog illustration
 * for the save function , we wrote a private function  
 ```markdown
 private:
-void saveContent(QString fileName); 
+   void saveContent(QString fileName); 
 ```
+
 Here is the implementation of this function:
+
 ```javascript
 void SpreadSheet::saveContent(QString fileName)
 {
@@ -185,6 +187,7 @@ private slots:
      void saveslot();
 ```
 that respond to the action trigger in the header, it is use to save the content of the file , here is its implementation:
+
 ```javascript
 void SpreadSheet::saveslot()
 {
@@ -1017,7 +1020,7 @@ for coding each action, we click left in the action, we select go to slot, then 
 
 ![Image](/gotoslot.png)
 
-* For the Action of **new file**:
+* For the Action of **new file**: 
 Here is the implementation of the method:
 ```javascript
 void Textedit::on_actionNew_triggered()
@@ -1056,6 +1059,7 @@ void Textedit::on_actionCut_triggered()
 }
 
 ```
+![Image](/cutpaste.png)
 * For the **Save** Action:
 Here is the implementation of the method:
 ```javascript
@@ -1088,6 +1092,8 @@ void Textedit::on_actionSave_As_triggered()
 
 }
 ```
+![Image](/saveas.png)
+
 * For the **Exit** Action:
 Here is the implementation of the method:
 ```javascript
@@ -1104,6 +1110,7 @@ void Textedit::on_action_Copy_triggered()
  ui->textEdit->copy();
 }
 ```
+![Image](/copypaste.png)
 * For the **Paste** Action:
 Here is the implementation of the method:
 ```javascript

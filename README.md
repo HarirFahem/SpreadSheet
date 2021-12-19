@@ -1144,7 +1144,7 @@ Our Example of Text Editor
 ![Image](/word.png)
 
 
-To start with, we designed textedit window in the followinf form( we added a menu bar, the we add tool bars and the text edit):
+To start with, we designed textedit window in the following form( we added a menu bar, then we add tool bars and the text edit):
 
 ![Image](/1.png)
  

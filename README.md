@@ -1085,7 +1085,9 @@ void Textedit::on_actionNew_triggered()
 }
 ```
 * For the Action of **Open file**:
+
 Here is the implementation of the method:
+
 ```javascript
 void Textedit::on_actionOpen_triggered()
 {

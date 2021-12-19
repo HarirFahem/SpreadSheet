@@ -24,7 +24,7 @@ Widgets and forms created with Qt Designer integrate seamlessly with programmed 
 
 ![Image](/qtdesigner.png)
 
- >**In This Zip you will have the project** [Homework3.zip]() 
+ >**In This Zip you will have the project** [Homework3.zip](https://github.com/HarirFahem/HomeWork3/blob/main/Homework3.zip) 
 
 
 ### SpreadSheet 
@@ -328,18 +328,67 @@ Open Csv File illustration
 We declared a slot called recentfile
 ```markdown
 private slots:
-   void recentfile();
+   void openRecentfile();
 ```
 And here is the implementation of this function
 ```javascript
-void SpreadSheet::recentfile()
+void SpreadSheet::openRecentFile()
 {
+    auto b = dynamic_cast<QAction*>(sender());
+    QFile file(b->text());
+    QString line;
+    if(file.open(QIODevice::ReadOnly))
+    {
+    QTextStream in(&file);
+    while( !in.atEnd())
+    {
+    line = in.readLine();
+    auto tokens = line.split(QChar(',') );
+    int row = tokens[0].toInt();
+    int col = tokens[1].toInt();
+    spreadsheet->setItem(row, col , new QTableWidgetItem(tokens[2]));
+    }
 
-    //recentfiles
-    QStringList *recentFile;
- 
+    }
+
+    *currentFile = (b->text()) ;
+    setWindowTitle(*currentFile);
+
+    file.close();
 }
 ```
+And to allow this function, we add in open function those lines:
+```cpp
+
+        int i=0;
+        if(i<maxFileNr)
+        {
+        recentFileActions.append(new QAction( *currentFile,this));
+
+        recentFilesMenu->addAction(recentFileActions[i]);
+        //connexion
+        connect(recentFileActions[i], &QAction::triggered, this, &SpreadSheet::openRecentFile);
+
+        i++;
+
+        }
+        else{
+        for (int j=0;j<4 ;j++ ) {
+        recentFileActions[4-j]->setText(recentFileActions[3-j]->text());
+
+        }
+        recentFileActions[0]->setText(*currentFile);
+
+      }
+```
+
+But our function can show only the last recent file. 
+
+![Image](/recfile.png)
+
+Recent File Illustration 
+
+ 
 a. We added a slot called close to quit the window
 First, we declare the slot in the header file
 ```markdown
@@ -491,7 +540,7 @@ private slots:
     void deletecell();
     void aboutSlot();
     void aboutQtSlot();
-    void recentfile();
+    void openRecentFile();
     void SaveAsSlot();
     void copySlot();
     void pasteSlot();
@@ -529,6 +578,9 @@ private:
     QAction *deleteall;
     QAction *recfiles;
 
+    QList<QAction*> recentFileActions;
+    const int maxFileNr;
+    QAction* recentFileAction=0;
 
     // ---------- Menus ----------
     QMenu *FileMenu;
@@ -536,6 +588,7 @@ private:
     QMenu *toolsMenu;
     QMenu *optionsMenu;
     QMenu *helpMenu;
+    QMenu *recentFilesMenu;
 
     QClipboard *clipboard;
 
@@ -548,10 +601,12 @@ private:
 
 };
 ```
+
 And here is the implemenation of all functions:
+
 ```javascript
 SpreadSheet::SpreadSheet(QWidget *parent)
-    : QMainWindow(parent)
+    : QMainWindow(parent) , maxFileNr(5)
 {
     //Seting the spreadsheet
     setupMainWidget();
@@ -568,6 +623,7 @@ SpreadSheet::SpreadSheet(QWidget *parent)
 
     //making the connexions
     makeConnexions();
+
 
 
     //Creating the labels for the status bar (should be in its proper function)
@@ -613,7 +669,7 @@ SpreadSheet::~SpreadSheet()
     delete auto_recalculate;
     delete about;
     delete aboutQt;
-    delete recfiles;
+
     // ---------- Menus ----------
     delete FileMenu;
     delete editMenu;
@@ -624,7 +680,7 @@ SpreadSheet::~SpreadSheet()
 
 void SpreadSheet::createActions()
 {
-    // --------- New File -------------------
+   // --------- New File -------------------
    QPixmap newIcon(":/new_file.png");
    newFile = new QAction(newIcon, "&New", this);
    newFile->setShortcut(tr("Ctrl+N"));
@@ -640,15 +696,12 @@ void SpreadSheet::createActions()
    save = new QAction(saveIcon,"&Save", this);
    save->setShortcut(tr("Ctrl+S"));
 
-    // --------- open file -------------------
+   // --------- open file -------------------
    QPixmap saveAsIcon(":/save_as_icon.png");
    saveAs = new QAction(saveAsIcon,"save &As", this);
 
-   //------recent file -------
-   QPixmap recentIcon(":/recent_icon.png");
-   recfiles = new QAction(recentIcon,"Recent &Files",this);
 
-    // --------- open file -------------------
+   // --------- open file -------------------
    QPixmap cutIcon(":/cut_icon.png");
    cut = new QAction(newIcon, "Cu&t", this);
    cut->setShortcut(tr("Ctrl+X"));
@@ -713,7 +766,7 @@ void SpreadSheet::createActions()
    QPixmap aboutQtIcon(":/about_qt_icon.png");
    aboutQt = new QAction(aboutQtIcon,"About &Qt");
 
-    // --------- exit -------------------
+   // --------- exit -------------------
    QPixmap exitIcon(":/quit_icon.png");
    exit = new QAction(exitIcon,"E&xit", this);
    exit->setShortcut(tr("Ctrl+Q"));
@@ -736,7 +789,9 @@ void SpreadSheet::createMenus()
     FileMenu->addAction(save);
     FileMenu->addAction(saveAs);
     FileMenu->addSeparator();
-    FileMenu->addAction(recfiles);
+    QPixmap recentIcon(":/recent_icon.png");
+    recentFilesMenu = FileMenu->addMenu(recentIcon,tr("&Open Recent"));
+    FileMenu->addSeparator();
     FileMenu->addAction(exit);
 
 
@@ -839,7 +894,7 @@ void SpreadSheet::makeConnexions()
    //connect du Qtslot
    connect(aboutQt,&QAction::triggered,this,&SpreadSheet::aboutQtSlot);
    //connect du recent files
-   connect(recfiles,&QAction::triggered,this,&SpreadSheet::recentfile);
+  // connect(recentFileAction,&QAction::triggered,this,&SpreadSheet::openRecentFile);
    //connect saveas
    connect(saveAs,&QAction::triggered,this,&SpreadSheet::SaveAsSlot);
    //connexion of copy and paste
@@ -852,17 +907,6 @@ void SpreadSheet::Search()
   FindDialog F;
   auto repl = F.exec();
 
-/*  auto q=F.getText();
-
-     for(int row=1; row< spreadsheet->rowCount(); row++) {
-         for(int col=1; row< spreadsheet->columnCount(); col++) {
-             if(q == spreadsheet->item(row,col)->text()) {
-                 spreadsheet->setCurrentCell(row,col);
-             }
-         }
-     }
-*/
-
   if(repl == FindDialog::Accepted){
       auto text=F.getText();
 
@@ -872,7 +916,7 @@ void SpreadSheet::Search()
                 spreadsheet->setCurrentCell( i, j);
 
       }
-  }
+    }
   }
 
 }
@@ -930,15 +974,37 @@ void SpreadSheet::saveContent(QString fileName)
 }
 void SpreadSheet::Open(){
 
-      QFileDialog D;
-     auto filename=D.getOpenFileName(this,("open file"));
+    QFileDialog D;
+        auto filename=D.getOpenFileName(this,("open file"));
 
-      //change the name of the file
-      currentFile = new QString(filename);
-      setWindowTitle(*currentFile);
-      if (currentFile->endsWith(".csv"))
-                loadcsv(filename);
-                else OpenContent(filename);
+        currentFile = new QString(filename);
+           setWindowTitle(*currentFile);
+           if (currentFile->endsWith(".csv")){
+                     loadcsv(filename);
+                    } else {OpenContent(filename);}
+
+
+
+        int i=0;
+        if(i<maxFileNr)
+        {
+        recentFileActions.append(new QAction( *currentFile,this));
+
+        recentFilesMenu->addAction(recentFileActions[i]);
+        //connexion
+        connect(recentFileActions[i], &QAction::triggered, this, &SpreadSheet::openRecentFile);
+
+        i++;
+
+        }
+        else{
+        for (int j=0;j<4 ;j++ ) {
+        recentFileActions[4-j]->setText(recentFileActions[3-j]->text());
+
+        }
+        recentFileActions[0]->setText(*currentFile);
+
+      }
 }
 void SpreadSheet::OpenContent(QString fileName){
     QFile file(fileName);
@@ -956,6 +1022,7 @@ void SpreadSheet::OpenContent(QString fileName){
                 spreadsheet->setItem(row,col,cell);
             }
 }
+
 }
 void SpreadSheet::newfile(){
 
@@ -1026,13 +1093,30 @@ void SpreadSheet::copySlot(){
 void SpreadSheet::pasteSlot(){
     spreadsheet->setItem(spreadsheet->currentRow(), spreadsheet->currentColumn(),new QTableWidgetItem(clipboard->text()));
 }
-void SpreadSheet::recentfile()
+void SpreadSheet::openRecentFile()
 {
+    auto b = dynamic_cast<QAction*>(sender());
+    QFile file(b->text());
+    QString line;
+    if(file.open(QIODevice::ReadOnly))
+    {
+    QTextStream in(&file);
+    while( !in.atEnd())
+    {
+    line = in.readLine();
+    auto tokens = line.split(QChar(',') );
+    int row = tokens[0].toInt();
+    int col = tokens[1].toInt();
+    spreadsheet->setItem(row, col , new QTableWidgetItem(tokens[2]));
+    }
 
-    //recentfiles
-    QStringList *recentFile;
-    QFileDialog D;
-    auto filename=D.getSaveFileName();
+    }
+
+    *currentFile = (b->text()) ;
+    setWindowTitle(*currentFile);
+
+    file.close();
+}
 
 ```
 
@@ -1040,6 +1124,8 @@ So we obtain:
 
 ![Image](/spread1.png)
 ![Image](/spread2.png)
+
+ >**In This Zip we have the SpreadSheet Project** [SpreadSheet.zip](https://github.com/HarirFahem/HomeWork3/blob/main/SpreadSheet.zip) 
 
 
  [(**Back to top**)](#back)

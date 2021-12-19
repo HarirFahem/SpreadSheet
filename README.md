@@ -1193,7 +1193,9 @@ void Textedit::on_actionOpen_triggered()
 }
 ```
 * For the **Cut** Action:
+
 Here is the implementation of the method:
+
 ```javascript
 void Textedit::on_actionCut_triggered()
 {
@@ -1201,6 +1203,7 @@ void Textedit::on_actionCut_triggered()
 }
 
 ```
+
 ![Image](/cutpaste.png)
 
 Cut Paste illustration

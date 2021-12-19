@@ -115,7 +115,7 @@ GotoCell dialog and response
 
 Find Dialog ui form 
 
-Then, we added a getter to obtain the serached text:
+Then, we added a getter to obtain the searched text:
 
 ```javascript
 QString FindDialog::getText() const
@@ -212,7 +212,7 @@ for the connexion in makeconnexions() function:
 
 save illustration
 
-* For saveAs, which export the date in a specific format like csv file of pds..
+* For saveAs, which export the data in a specific format like csv file of pds..
 We declared a slot called SaveAsSlot():
 ```markdown
 private slots:

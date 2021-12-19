@@ -1135,8 +1135,11 @@ void Textedit::on_action_Save_triggered()
   }
 }
 ```
+
 * For the **Save As** Action:
+
 Here is the implementation of the method:
+
 ```javascript
 void Textedit::on_actionSave_As_triggered()
 {
@@ -1152,34 +1155,44 @@ void Textedit::on_actionSave_As_triggered()
 
 }
 ```
+
 ![Image](/saveas.png)
 
 Save As illustration
 
+
  [(**Back to top**)](#back)
 
 * For the **Exit** Action:
+
 Here is the implementation of the method:
+
 ```javascript
 void Textedit::on_actionE_xit_triggered()
 {
   ui->centralwidget->close();
 }
 ```
+
 * For the **Copy** Action:
+
 Here is the implementation of the method:
+
 ```javascript
 void Textedit::on_action_Copy_triggered()
 {
  ui->textEdit->copy();
 }
 ```
+
 ![Image](/copypaste.png)
 
 Copy Paste Illustration
 
 * For the **Paste** Action:
+
 Here is the implementation of the method:
+
 ```javascript
 void Textedit::on_action_Paste_triggered()
 {
@@ -1187,8 +1200,11 @@ void Textedit::on_action_Paste_triggered()
 }
 
 ```
+
 * For the **About** Action:
+
 Here is the implementation of the method:
+
 ```javascript
 void Textedit::on_action_About_triggered()
 {
@@ -1198,15 +1214,20 @@ void Textedit::on_action_About_triggered()
 }
 ```
 * For the **About Qt** Action:
+
 Here is the implementation of the method:
+
 ```javascript
 void Textedit::on_actionAbout_Qt_triggered()
 {
 QMessageBox::aboutQt(this, "Your Qt");
 }
 ```
+
 * For the **Undo** Action:
+
 Here is the implementation of the method:
+
 ```javascript
 void Textedit::on_actionUndo_triggered()
 {
@@ -1220,7 +1241,9 @@ void Textedit::on_actionUndo_triggered()
 Undo Illustration
 
 * For the **Redo** Action:
+
 Here is the implementation of the method:
+
 ```javascript
 void Textedit::on_actionRedo_triggered()
 {

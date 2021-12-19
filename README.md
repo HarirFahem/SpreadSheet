@@ -382,7 +382,6 @@ And to allow this function, we add in open function those lines:
       }
 ```
 
-But our function can show only the last recent file. 
 
 ![Image](/recfile.png)
 
